@@ -255,33 +255,35 @@ function Home({ user, onLogout }) {
       alert("Failed to send message. Please try again.");
     }
   };
-
+  
   return (
     <div className="home-container">
       <div className="home-header">
-        <h2>Chat App - {user.email}</h2>
+        <h2>Chat App</h2> 
         <div className="home-header-buttons">
           <button className="btn-new-chat" onClick={() => setShowNewChat(true)}>
-            + New Chat
+            + New
           </button>
           <button className="btn-logout" onClick={onLogout}>
             Logout
           </button>
         </div>
       </div>
-
-      <div className="chat-layout">
+      <div className={`chat-layout ${activeConversation ? "view-chat" : "view-list"}`}>
+        
         <ConversationList
           conversations={conversations}
           onSelect={handleSelectConversation}
           activeEmail={activeConversation?.targetEmail}
         />
+
         <ChatWindow
           conversation={activeConversation}
           currentUserId={user.id}
           onSendMessage={handleSendMessage}
           onTyping={handleTyping}
           isOtherUserTyping={isOtherUserTyping}
+          onBack={() => setActiveConversation(null)} 
         />
       </div>
 

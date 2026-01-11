@@ -547,4 +547,66 @@ body {
   .modal-content {
     min-width: 90%;
   }
+
+  /* Mobile Responsive Improvements */
+
+/* Back Button (Hidden on Desktop) */
+.mobile-back-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 10px;
+  padding: 0 5px;
+}
+
+/* Mobile View Logic */
+@media (max-width: 768px) {
+  .home-container {
+    height: 100vh; /* Full screen on mobile */
+    border-radius: 0; /* Remove rounded corners */
+    max-height: none;
+  }
+
+  .chat-layout {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* When list is active, show list, hide chat */
+  .view-list .conversation-list {
+    width: 100%;
+    display: flex;
+  }
+  .view-list .chat-window {
+    display: none;
+  }
+
+  /* When chat is active, show chat, hide list */
+  .view-chat .conversation-list {
+    display: none;
+  }
+  .view-chat .chat-window {
+    width: 100%;
+    display: flex;
+  }
+
+  /* Show back button on mobile */
+  .mobile-back-btn {
+    display: block;
+  }
+
+  /* Adjust header text size */
+  .home-header h2 {
+    font-size: 18px;
+  }
+
+  /* Make modal full width */
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+}
 }

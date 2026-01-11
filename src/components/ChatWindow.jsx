@@ -1,22 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 
-function ChatWindow({ conversation, currentUserId, onSendMessage }) {
+// Add 'onBack' to the props list
+function ChatWindow({ conversation, currentUserId, onSendMessage, onTyping, isOtherUserTyping, onBack }) {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to the bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conversation?.messages]);
-
-  // Helper to format the time (e.g., "10:39 AM")
-  const formatTime = (dateString) => {
-    if (!dateString) return "";
-    return new Date(dateString).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  }, [conversation?.messages, isOtherUserTyping]);
 
   if (!conversation) {
     return (
@@ -42,9 +33,21 @@ function ChatWindow({ conversation, currentUserId, onSendMessage }) {
     }
   };
 
+  const handleInputChange = (e) => {
+    setMessage(e.target.value);
+    if (onTyping) {
+      onTyping(true);
+    }
+  };
+
   return (
     <div className="chat-window">
-      <div className="chat-header">
+      <div className="chat-header" style={{ display: "flex", alignItems: "center" }}>
+        {/* Mobile Back Button */}
+        <button className="mobile-back-btn" onClick={onBack}>
+          &#8592; {/* Left Arrow Icon */}
+        </button>
+        
         <h3>{conversation.targetEmail}</h3>
       </div>
 
@@ -56,20 +59,20 @@ function ChatWindow({ conversation, currentUserId, onSendMessage }) {
               msg.sender === currentUserId ? "sent" : "received"
             }`}
           >
-            {/* The container wraps the bubble and the time together */}
-            <div className="message-container">
-              <div className="message-bubble">
-                {msg.content}
-              </div>
-              
-              {/* Greyed out timestamp underneath */}
-              <span className="message-time">
-                {formatTime(msg.createdAt)}
-              </span>
-            </div>
+            <div className="message-bubble">{msg.content}</div>
           </div>
         ))}
-        {/* Invisible element to anchor scroll to bottom */}
+        
+        {isOtherUserTyping && (
+          <div className="message received">
+            <div className="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
 
@@ -77,8 +80,8 @@ function ChatWindow({ conversation, currentUserId, onSendMessage }) {
         <input
           type="text"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
           placeholder="Type a message..."
         />
         <button className="btn-send" onClick={handleSend}>
